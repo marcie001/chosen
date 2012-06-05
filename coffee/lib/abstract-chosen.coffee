@@ -89,6 +89,8 @@ class AbstractChosen
       this.results_show()
 
   keyup_checker: (evt) ->
+    detect_checker = @enter_checker
+    @enter_checker = false
     stroke = evt.which ? evt.keyCode
     this.search_field_scale()
 
@@ -101,6 +103,7 @@ class AbstractChosen
           this.results_search()
       when 13
         evt.preventDefault()
+        return this.results_search() if not detect_checker
         this.result_select(evt) if this.results_showing
       when 27
         this.results_hide() if @results_showing

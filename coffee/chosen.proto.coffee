@@ -505,6 +505,7 @@ class Chosen extends AbstractChosen
     @pending_backstroke = null
 
   keydown_checker: (evt) ->
+    @enter_checker = false
     stroke = evt.which ? evt.keyCode
     this.search_field_scale()
 
@@ -519,6 +520,7 @@ class Chosen extends AbstractChosen
         @mouse_on_container = false
         break
       when 13
+        @enter_checker = true
         evt.preventDefault()
         break
       when 38
