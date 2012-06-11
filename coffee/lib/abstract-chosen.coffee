@@ -33,6 +33,7 @@ class AbstractChosen
     @choices = 0
     @single_backstroke_delete = @options.single_backstroke_delete || false
     @max_selected_options = @options.max_selected_options || Infinity
+    @target_attribute_names = @options.target_attribute_names || []
 
   set_default_text: ->
     if @form_field.getAttribute("data-placeholder")
@@ -121,5 +122,18 @@ class AbstractChosen
     chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     rand = Math.floor(Math.random() * chars.length)
     newchar = chars.substring rand, rand+1
+
+  test_target_attributes: (regex, option) ->
+    return false if not @target_attribute_names
+    return true for name in @target_attribute_names when regex.test(option.dataset[name])
+    false
+
+  test_target_attributes_parts: (regex, option) ->
+    return false if not @target_attribute_names
+    for name in @target_attribute_names when option.dataset[name].indexOf(" ") >= 0 or option.dataset[name].indexOf("[") == 0
+      parts = option.dataset[name].replace(/\[|\]/g, "").split(" ")
+      if parts.length
+        return true for part in parts when regex.test part
+    false
 
 root.AbstractChosen = AbstractChosen

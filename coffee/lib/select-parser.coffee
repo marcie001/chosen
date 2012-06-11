@@ -25,6 +25,8 @@ class SelectParser
       if option.text != ""
         if group_position?
           @parsed[group_position].children += 1
+        dataset = {}
+        dataset[attr.nodeName.substring(5)] = attr.nodeValue for attr in option.attributes when attr.nodeName.indexOf('data-') is 0
         @parsed.push
           array_index: @parsed.length
           options_index: @options_index
@@ -36,6 +38,7 @@ class SelectParser
           group_array_index: group_position
           classes: option.className
           style: option.style.cssText
+          dataset: dataset
       else
         @parsed.push
           array_index: @parsed.length

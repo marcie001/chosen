@@ -401,7 +401,7 @@ class Chosen extends AbstractChosen
           found = false
           result_id = option.dom_id
           
-          if regex.test option.html
+          if regex.test(option.html) or this.test_target_attributes(regex, option)
             found = true
             results += 1
           else if option.html.indexOf(" ") >= 0 or option.html.indexOf("[") == 0
@@ -412,12 +412,15 @@ class Chosen extends AbstractChosen
                 if regex.test part
                   found = true
                   results += 1
+          else if this.test_target_attributes_parts(regex, option)
+            found = true
+            results += 1
 
           if found
             if searchText.length
-              startpos = option.html.search zregex
-              text = option.html.substr(0, startpos + searchText.length) + '</em>' + option.html.substr(startpos + searchText.length)
-              text = text.substr(0, startpos) + '<em>' + text.substr(startpos)
+              text = this.emphasis_matched_string(zregex, searchText, option.html)
+              for name in @target_attribute_names
+                text += '<br/>' + name + ': ' + this.emphasis_matched_string(zregex, searchText, option.dataset[name])
             else
               text = option.html
 
@@ -555,6 +558,13 @@ class Chosen extends AbstractChosen
 
       dd_top = @container.getHeight()
       @dropdown.setStyle({"top":  dd_top + "px"})
+
+
+  emphasis_matched_string: (zregex, searchText, targetText) ->
+    startpos = targetText.search zregex
+    return targetText if !~startpos
+    targetText = targetText.substr(0, startpos + searchText.length) + '</em>' + targetText.substr(startpos + searchText.length)
+    targetText.substr(0, startpos) + '<em>' + targetText.substr(startpos)
 
 root.Chosen = Chosen
 
